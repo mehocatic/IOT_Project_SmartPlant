@@ -1,0 +1,116 @@
+<div class="app-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1 class="title">Monitor sistem</h1>
+      <div class="status-badge" [class.online]="status === 'online'">
+        {{ status === 'online' ? 'Online' : 'Offline' }}
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Card -->
+  <div class="main-card">
+    <!-- Moisture Display -->
+    <div class="moisture-section">
+      <div class="moisture-circle" [style.border-color]="getStateColor()">
+        <div class="moisture-inner">
+          <div class="moisture-value" [style.color]="getStateColor()">
+            {{ moisture }}
+          </div>
+          <div class="moisture-unit">%</div>
+          <div class="moisture-label">Vlažnost</div>
+        </div>
+      </div>
+
+      <div class="recommendation-box" [style.background]="getStateColor()">
+        <div class="rec-text">{{ getRecommendationText() }}</div>
+      </div>
+    </div>
+
+    <!-- Warning Alert -->
+    <div class="alert alert-danger" *ngIf="showWarning">
+      <div class="alert-content">
+        <div class="alert-title">Upozorenje!</div>
+        <div class="alert-text">
+          Vlažnost je {{ moisturePercent > 25 ? 'visoka' : 'optimalna' }} ({{ moisture }}%),
+          ali navodnjavanje je aktivno. Razmislite o zaustavljanju!
+        </div>
+      </div>
+    </div>
+
+    <!-- Control Button -->
+    <div class="control-section">
+      <button class="control-btn" [class.active]="manualActive" (click)="toggleManualWater()">
+        <div class="btn-glow" [class.active]="manualActive"></div>
+        <div class="btn-content">
+          <div class="btn-text">
+            {{ manualActive ? 'Zaustavi Navodnjavanje' : 'Pokreni Navodnjavanje' }}
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="info-grid">
+      <div class="info-item">
+        <!-- <div class="info-icon" [style.background]="getServoColor()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m9-9h-6m-6 0H3"></path>
+          </svg>
+        </div> -->
+        <div class="info-details">
+          <div class="info-label">Servo Motor</div>
+          <div class="info-value">{{ servoPosition }}°</div>
+          <div class="info-desc">{{ getServoStatus() }}</div>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <!-- <div class="info-icon" [style.background]="manualActive ? '#FF6B6B' : '#4ECDC4'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div> -->
+        <div class="info-details">
+          <div class="info-label">Režim Rada</div>
+          <div class="info-value">{{ manualActive ? 'MANUAL' : 'AUTO' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Card -->
+  <div class="history-card" *ngIf="history.length > 0">
+    <div class="history-header">
+      <h2>Zadnjih 5 Mjerenja</h2>
+      <div class="history-count">{{ history.length }}/5</div>
+    </div>
+
+    <div class="history-timeline">
+      <div class="timeline-item" *ngFor="let item of history; let i = index">
+        <div class="timeline-content">
+          <div class="timeline-time">{{ item.timestamp }}</div>
+          <div class="timeline-data">
+            <span class="timeline-moisture" [style.color]="item.color">
+              {{ item.moisture }}%
+            </span>
+            <span class="timeline-badge" [style.background]="item.color">
+              {{ item.recommendation }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-line">ESP32 IOT Projekat</div>
+      <div class="footer-subline">Meho Catic Seminarski rad 2026</div>
+
+    </div>
+  </footer>
+</div>
